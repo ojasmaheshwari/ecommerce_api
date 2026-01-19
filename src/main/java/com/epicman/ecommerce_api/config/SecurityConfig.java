@@ -32,6 +32,7 @@ public class SecurityConfig {
 		http.csrf(crsf -> crsf.disable()).authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/auth/**").permitAll()
 				.requestMatchers("/").permitAll()
+				.requestMatchers("/api/payments/webhook").permitAll()
 				.anyRequest().authenticated()
 
 		).headers(headers -> headers

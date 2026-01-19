@@ -3,14 +3,17 @@ package com.epicman.ecommerce_api.controller;
 import com.epicman.ecommerce_api.model.PaymentModel;
 import com.epicman.ecommerce_api.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import com.epicman.ecommerce_api.webhook.PaymentWebhookController;
 
 @RestController
 @RequestMapping("/api/payments")
@@ -20,6 +23,8 @@ public class PaymentController {
 	private PaymentRepository paymentRepository;
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+	private final RestTemplate restTemplate = new RestTemplate();
 
 	@PostMapping("/create")
 	public ResponseEntity<PaymentModel> createPayment(@RequestBody PaymentRequest request) {
@@ -34,19 +39,29 @@ public class PaymentController {
 
 		paymentRepository.save(payment);
 
-		// Simulate webhook call after 3 seconds
-		scheduler.schedule(() -> mockWebhook(payment.getId()), 3, TimeUnit.SECONDS);
+		// Schedule mock webhook call after 3 seconds
+		scheduler.schedule(() -> callWebhook(payment), 3, TimeUnit.SECONDS);
 
 		return ResponseEntity.ok(payment);
 	}
 
-	// Mock webhook simulation
-	private void mockWebhook(String paymentId) {
-		PaymentModel payment = paymentRepository.findById(paymentId).orElse(null);
-		if (payment != null) {
-			payment.setStatus("SUCCESS"); // Update status
-			paymentRepository.save(payment);
-			System.out.println("Webhook called: Payment " + paymentId + " marked SUCCESS");
+	// Simulate calling the webhook endpoint
+	private void callWebhook(PaymentModel payment) {
+		String webhookUrl = "http://localhost:8080/api/payments/webhook"; // Adjust host/port as needed
+
+		PaymentWebhookController.WebhookRequest webhookRequest = new PaymentWebhookController.WebhookRequest();
+		webhookRequest.setPaymentId(payment.getId());
+		webhookRequest.setStatus("SUCCESS");
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<PaymentWebhookController.WebhookRequest> entity = new HttpEntity<>(webhookRequest, headers);
+
+		try {
+			restTemplate.postForEntity(webhookUrl, entity, String.class);
+			System.out.println("Mock webhook called for payment " + payment.getPaymentId());
+		} catch (Exception e) {
+			System.err.println("Failed to call webhook for payment " + payment.getPaymentId() + ": " + e.getMessage());
 		}
 	}
 
