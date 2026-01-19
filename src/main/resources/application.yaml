@@ -1,10 +1,10 @@
 spring:
   application:
-    name: rideshare
+    name: ecommerce_api
 
   data:
     mongodb:
-      uri: mongodb://localhost:27017/rideshare
+      uri: mongodb://localhost:27017/ecommerce_api
 
   profiles:
     active: local

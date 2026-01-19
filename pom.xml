@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.epicman</groupId>
-	<artifactId>rideshare</artifactId>
+	<artifactId>ecommerce_api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>rideshare</name>
-	<description>RideShare API</description>
+	<name>ecommerce_api</name>
+	<description>Ecommerce API</description>
 	<url/>
 	<licenses>
 		<license/>
