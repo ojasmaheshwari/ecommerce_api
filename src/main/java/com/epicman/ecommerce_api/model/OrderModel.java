@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.List;
 
 @Document(collection = "orders")
 public class OrderModel {
@@ -14,17 +15,22 @@ public class OrderModel {
 	private Double totalAmount;
 	private String status; // CREATED, PAID, FAILED, CANCELLED
 	private Instant createdAt;
+	private List<OrderItemModel> items; // List of items in the order
+	private PaymentModel payment; // Payment info if available
 
 	// Constructors
 	public OrderModel() {
 	}
 
-	public OrderModel(String id, String userId, Double totalAmount, String status, Instant createdAt) {
+	public OrderModel(String id, String userId, Double totalAmount, String status, Instant createdAt,
+			List<OrderItemModel> items, PaymentModel payment) {
 		this.id = id;
 		this.userId = userId;
 		this.totalAmount = totalAmount;
 		this.status = status;
 		this.createdAt = createdAt;
+		this.items = items;
+		this.payment = payment;
 	}
 
 	// Getters and Setters
@@ -66,5 +72,21 @@ public class OrderModel {
 
 	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public List<OrderItemModel> getItems() {
+		return items;
+	}
+
+	public void setItems(List<OrderItemModel> items) {
+		this.items = items;
+	}
+
+	public PaymentModel getPayment() {
+		return payment;
+	}
+
+	public void setPayment(PaymentModel payment) {
+		this.payment = payment;
 	}
 }

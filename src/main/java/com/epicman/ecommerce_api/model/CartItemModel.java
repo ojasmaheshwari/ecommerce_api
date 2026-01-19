@@ -11,25 +11,22 @@ public class CartItemModel {
 	private String userId; // Reference to UserModel
 	private String productId; // Reference to ProductModel
 	private Integer quantity;
+	private Double price;
 
 	// Constructors
 	public CartItemModel() {
 	}
 
-	public CartItemModel(String id, String userId, String productId, Integer quantity) {
-		this.id = id;
+	public CartItemModel(String userId, String productId, Integer quantity, Double price) {
 		this.userId = userId;
 		this.productId = productId;
 		this.quantity = quantity;
+		this.price = price;
 	}
 
 	// Getters and Setters
 	public String getId() {
 		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public String getUserId() {
@@ -55,4 +52,17 @@ public class CartItemModel {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
 }
